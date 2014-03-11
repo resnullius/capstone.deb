@@ -1,5 +1,5 @@
-capstone (2.1-1) unstable; urgency=low
+capstone (2.1-1) UNRELEASED; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release (closes: #741028).
 
- -- David Martínez Moreno <ender@debian.org>  Thu, 06 Mar 2014 22:56:58 -0800
+ -- David Martínez Moreno <ender@debian.org>  Fri, 07 Mar 2014 08:34:59 -0800
