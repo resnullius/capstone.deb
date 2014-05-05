@@ -25,15 +25,13 @@ Description: lightweight multi-architecture disassembly framework - library
  Features:
  - Support hardware architectures: ARM, ARM64 (aka ARMv8), Mips, PowerPC & Intel.
  - Clean/simple/lightweight/intuitive architecture-neutral API.
- - Provide details on disassembled instruction (called "decomposer" by some
+ - Provide details on disassembled instructions (called "decomposer" by some
  others).
  - Provide some semantics of the disassembled instruction, such as list of
  implicit registers read & written.
- - Implemented in pure C language, with bindings for Python, Ruby, C#, Java, GO,
- OCaml & Vala available.
- - Native support for Windows & *nix (with MacOSX, Linux, *BSD & Solaris confirmed).
+ - Implemented in pure C language, with bindings for Java, OCaml and Python ready to
+ use and Ruby, C#, GO & Vala available on git repos.
+ - Native support for Windows & *nix (with OS X, Linux, *BSD & Solaris confirmed).
  - Thread-safe by design.
  - Special support for embedding into firmware or OS kernel.
  - Distributed under the open source BSD license.
-
-
