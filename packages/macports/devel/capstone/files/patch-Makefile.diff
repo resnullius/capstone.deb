@@ -1,6 +1,6 @@
---- Makefile.orig	2014-01-22 04:33:35.000000000 -0600
-+++ Makefile	2014-02-14 18:38:48.000000000 -0600
-@@ -21,20 +21,23 @@
+--- Makefile.org	2014-03-10 23:12:11.000000000 -0700
++++ Makefile	2014-03-10 23:33:10.000000000 -0700
+@@ -22,20 +22,24 @@
  CFLAGS += -DUSE_SYS_DYN_MEM
  endif
  
@@ -10,21 +10,20 @@
  DESTDIR ?=
 -INCDIR = $(DESTDIR)$(PREFIX)/include
 +INCDIR = $(PREFIX)/include
-+
+ 
+-LIBDIR = $(DESTDIR)$(PREFIX)/lib
 +UNAME_S := $(shell uname -s)
 +ifeq ($(UNAME_S),Darwin)
 +LDFLAGS += -dynamiclib -install_name $(LIBDIR)/$(LIBRARY)
 +else
 +LDFLAGS += -shared
 +endif
- 
--LIBDIR = $(DESTDIR)$(PREFIX)/lib
++ 
++
 +LIBDIR = $(PREFIX)/lib
  # on x86_64, we might have /usr/lib64 directory instead of /usr/lib
--MACHINE := $(shell uname -m)
--ifeq ($(MACHINE), x86_64)
-+UNAME_M := $(shell uname -m)
-+ifeq ($(UNAME_M),x86_64)
+ UNAME_M := $(shell uname -m)
+ ifeq ($(UNAME_M), x86_64)
  ifeq (,$(wildcard $(LIBDIR)))
 -LIBDIR = $(DESTDIR)$(PREFIX)/lib64
 -else
@@ -33,17 +32,31 @@
  endif
  endif
  
-@@ -88,7 +91,6 @@
- 
+@@ -138,7 +142,6 @@
  LIBOBJ += MCInst.o
  
+ 
 -UNAME_S := $(shell uname -s)
+ PKGCFCGDIR = $(LIBDIR)/pkgconfig
+ 
  # OSX?
- ifeq ($(UNAME_S),Darwin)
- EXT = dylib
-@@ -145,25 +147,25 @@
- 	echo 'Description: Capstone disassembler engine' >> $(PKGCFGF)
- 	echo 'Version: $(VERSION)' >> $(PKGCFGF)
+@@ -149,13 +152,6 @@
+ # remove string check because OSX kernel complains about missing symbols
+ CFLAGS += -D_FORTIFY_SOURCE=0
+ endif
+-# By default, suppose that Brew is installed & use Brew path for pkgconfig file
+-PKGCFCGDIR = /usr/local/lib/pkgconfig
+-# is Macport installed instead?
+-ifneq (,$(wildcard /opt/local/bin/port))
+-# then correct the path for pkgconfig file
+-PKGCFCGDIR = /opt/local/lib/pkgconfig
+-endif
+ else
+ # Cygwin?
+ IS_CYGWIN := $(shell $(CC) -dumpmachine | grep -i cygwin | wc -l)
+@@ -237,25 +233,25 @@
+ 	echo 'Version: $(PKG_MAJOR).$(PKG_MINOR).$(PKG_EXTRA)' >> $(PKGCFGF)
+ endif
  	echo 'libdir=$(LIBDIR)' >> $(PKGCFGF)
 -	echo 'includedir=$(PREFIX)/include/capstone' >> $(PKGCFGF)
 +	echo 'includedir=$(INCDIR)/capstone' >> $(PKGCFGF)
@@ -57,25 +70,25 @@
 -	$(INSTALL_DATA) lib$(LIBNAME).$(AR_EXT) $(LIBDIR)
 -	mkdir -p $(INCDIR)/$(LIBNAME)
 -	$(INSTALL_DATA) include/*.h $(INCDIR)/$(LIBNAME)
--	mkdir -p $(LIBDIR)/pkgconfig
--	$(INSTALL_DATA) $(PKGCFGF) $(LIBDIR)/pkgconfig/
+-	mkdir -p $(PKGCFCGDIR)
+-	$(INSTALL_DATA) $(PKGCFGF) $(PKGCFCGDIR)/
 +	mkdir -p $(DESTDIR)$(LIBDIR)
 +	$(INSTALL_LIBRARY) lib$(LIBNAME).$(EXT) $(DESTDIR)$(LIBDIR)
 +	$(INSTALL_DATA) lib$(LIBNAME).$(AR_EXT) $(DESTDIR)$(LIBDIR)
 +	mkdir -p $(DESTDIR)$(INCDIR)/$(LIBNAME)
 +	$(INSTALL_DATA) include/*.h $(DESTDIR)$(INCDIR)/$(LIBNAME)
-+	mkdir -p $(DESTDIR)$(LIBDIR)/pkgconfig
-+	$(INSTALL_DATA) $(PKGCFGF) $(DESTDIR)$(LIBDIR)/pkgconfig/
++	mkdir -p $(DESTDIR)$(PKGCFCGDIR)
++	$(INSTALL_DATA) $(PKGCFGF) $(DESTDIR)$(PKGCFCGDIR)/
  
  uninstall:
 -	rm -rf $(INCDIR)/$(LIBNAME)
 -	rm -f $(LIBDIR)/lib$(LIBNAME).$(EXT)
 -	rm -f $(LIBDIR)/lib$(LIBNAME).$(AR_EXT)
--	rm -f $(LIBDIR)/pkgconfig/$(LIBNAME).pc
+-	rm -f $(PKGCFCGDIR)/$(LIBNAME).pc
 +	rm -rf $(DESTDIR)$(INCDIR)/$(LIBNAME)
 +	rm -f $(DESTDIR)$(LIBDIR)/lib$(LIBNAME).$(EXT)
 +	rm -f $(DESTDIR)$(LIBDIR)/lib$(LIBNAME).$(AR_EXT)
-+	rm -f $(DESTDIR)$(LIBDIR)/pkgconfig/$(LIBNAME).pc
++	rm -f $(DESTDIR)$(PKGCFCGDIR)/$(LIBNAME).pc
  
  clean:
  	rm -f $(LIBOBJ) lib$(LIBNAME).*
