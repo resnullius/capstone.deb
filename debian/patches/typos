@@ -1,0 +1,46 @@
+Description: Fix typos.
+ Some things here and there that need to be fixed.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: no
+Last-Update: 2014-05-05
+
+--- capstone-2.1.orig/README
++++ capstone-2.1/README
+@@ -31,7 +31,7 @@ Further information is available at http
+ 
+ [Compile]
+ 
+-See COMPILE.TXT file for how to compile and install Capstone
++See COMPILE.TXT file for how to compile and install Capstone.
+ 
+ 
+ [Status]
+@@ -41,7 +41,7 @@ MingW. Visual Studio support will be don
+ 
+ - X86 engine cannot handle many malware tricks yet. Please report all the raw
+ binary code that Capstone cannot disassemble, or does that wrongly, so we can
+-fix that in the next version
++fix that in the next version.
+ 
+ - This package only contains Java & Python bindings. For C#, Go, Ocaml & Ruby,
+ refer to the corresponding git repositories.
+@@ -49,7 +49,7 @@ refer to the corresponding git repositor
+ 
+ [Hack]
+ 
+-See HACK.TXT file for the structuture of the source code.
++See HACK.TXT file for the structure of the source code.
+ 
+ 
+ [License]
+--- capstone-2.1.orig/config.mk
++++ capstone-2.1/config.mk
+@@ -40,7 +40,7 @@ USE_SYS_DYN_MEM = yes
+ # such as @regs_read/write & @group. The amount of binary size reduced is
+ # up to 50% in some individual archs.
+ #
+-# NOTE: we still keep all those related fileds @mnemonic, @op_str, @regs_read,
++# NOTE: we still keep all those related fields @mnemonic, @op_str, @regs_read,
+ # @regs_write, @groups, etc in fields in cs_insn structure regardless, but they
+ # will not be updated (i.e empty), thus become irrelevant.
+ 

@@ -1,5 +1,7 @@
 capstone (2.1-1) UNRELEASED; urgency=low
 
   * Initial release (closes: #741028).
+  * debian/patches:
+    - typos: Added to fix some stuff I spotted.
 
  -- David Martínez Moreno <ender@debian.org>  Fri, 07 Mar 2014 08:34:59 -0800
