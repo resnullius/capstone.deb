@@ -95,10 +95,11 @@ static inline unsigned CountLeadingZeros_32(uint32_t Value) {
 #endif
 	Count = __builtin_clz(Value);
 #else
+	unsigned Shift;
 	if (!Value) return 32;
 	Count = 0;
 	// bisection method for count leading zeros
-	for (unsigned Shift = 32 >> 1; Shift; Shift >>= 1) {
+	for (Shift = 32 >> 1; Shift; Shift >>= 1) {
 		uint32_t Tmp = Value >> Shift;
 		if (Tmp) {
 			Value = Tmp;
@@ -132,12 +133,13 @@ static inline unsigned CountLeadingZeros_64(uint64_t Value) {
 	Count = __builtin_clzll(Value);
 #else
 #ifndef _MSC_VER
+	unsigned Shift;
 	if (sizeof(long) == sizeof(int64_t))
 	{
 		if (!Value) return 64;
 		Count = 0;
 		// bisection method for count leading zeros
-		for (unsigned Shift = 64 >> 1; Shift; Shift >>= 1) {
+		for (Shift = 64 >> 1; Shift; Shift >>= 1) {
 			uint64_t Tmp = Value >> Shift;
 			if (Tmp) {
 				Value = Tmp;
@@ -242,7 +244,7 @@ static inline unsigned CountPopulation_32(uint32_t Value) {
 #else
 	uint32_t v = Value - ((Value >> 1) & 0x55555555);
 	v = (v & 0x33333333) + ((v >> 2) & 0x33333333);
-	return ((v + (v >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+	return (((v + (v >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
 #endif
 }
 

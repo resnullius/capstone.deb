@@ -11,8 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-/* Capstone Disassembler Engine */
-/* By Nguyen Anh Quynh <aquynh@gmail.com>, 2013> */
+/* Capstone Disassembly Engine */
+/* By Nguyen Anh Quynh <aquynh@gmail.com>, 2013-2014 */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,9 +27,10 @@
 #include "../../MathExtras.h"
 #include "PPCMapping.h"
 
-//#include "PPCMapping.h"
-
+#ifndef CAPSTONE_DIET
 static const char *getRegisterName(unsigned RegNo);
+#endif
+
 static void printOperand(MCInst *MI, unsigned OpNo, SStream *O);
 static void printInstruction(MCInst *MI, SStream *O, MCRegisterInfo *MRI);
 static void printAbsBranchOperand(MCInst *MI, unsigned OpNo, SStream *O);
@@ -127,18 +128,6 @@ void PPC_printInst(MCInst *MI, SStream *O, void *Info)
 		}
 	}
 
-	// For fast-isel, a COPY_TO_REGCLASS may survive this long.  This is
-	// used when converting a 32-bit float to a 64-bit float as part of
-	// conversion to an integer (see PPCFastISel.cpp:SelectFPToI()),
-	// as otherwise we have problems with incorrect register classes
-	// in machine instruction verification.  For now, just avoid trying
-	// to print it as such an instruction has no effect (a 32-bit float
-	// in a register is already in 64-bit form, just with lower
-	// precision).  FIXME: Is there a better solution?
-
-	//if (MCInst_getOpcode(MI) == TargetOpcode_COPY_TO_REGCLASS)
-	//	return;
-
 	printInstruction(MI, O, NULL);
 }
 
@@ -152,6 +141,7 @@ static void printPredicateOperand(MCInst *MI, unsigned OpNo,
 
 	if (!strcmp(Modifier, "cc")) {
 		switch ((ppc_predicate)Code) {
+			default:	// unreachable
 			case PPC_PRED_LT_MINUS:
 			case PPC_PRED_LT_PLUS:
 			case PPC_PRED_LT:
@@ -193,7 +183,6 @@ static void printPredicateOperand(MCInst *MI, unsigned OpNo,
 				SStream_concat(O, "nu");
 				return;
 		}
-		// llvm_unreachable("Invalid predicate code");
 	}
 
 	if (!strcmp(Modifier, "pm")) {
@@ -226,6 +215,8 @@ static void printPredicateOperand(MCInst *MI, unsigned OpNo,
 			case PPC_PRED_UN_PLUS:
 			case PPC_PRED_NU_PLUS:
 				SStream_concat(O, "+");
+				return;
+			default:	// unreachable
 				return;
 		}
 		// llvm_unreachable("Invalid predicate code");
@@ -471,6 +462,7 @@ static void printTLSCall(MCInst *MI, unsigned OpNo, SStream *O)
 }
 
 
+#ifndef CAPSTONE_DIET
 /// stripRegisterPrefix - This method strips the character prefix from a
 /// register name so that only the number is left.  Used by for linux asm.
 static const char *stripRegisterPrefix(const char *RegName)
@@ -487,6 +479,7 @@ static const char *stripRegisterPrefix(const char *RegName)
 
 	return RegName;
 }
+#endif
 
 static void printOperand(MCInst *MI, unsigned OpNo, SStream *O)
 {

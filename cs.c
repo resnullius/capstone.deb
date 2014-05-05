@@ -10,7 +10,12 @@
 #include "utils.h"
 #include "MCRegisterInfo.h"
 
-#define INSN_CACHE_SIZE 64
+#ifdef USE_SYS_DYN_MEM
+#define INSN_CACHE_SIZE 32
+#else
+// reduce stack variable size for kernel/firmware
+#define INSN_CACHE_SIZE 8
+#endif
 
 cs_err (*arch_init[MAX_ARCH])(cs_struct *) = { NULL };
 cs_err (*arch_option[MAX_ARCH]) (cs_struct *, cs_opt_type, size_t value) = { NULL };
@@ -320,6 +325,7 @@ size_t cs_disasm_ex(csh ud, const uint8_t *buffer, size_t size, uint64_t offset,
 	cs_insn insn_cache[INSN_CACHE_SIZE];
 	void *total = NULL;
 	size_t total_size = 0;
+	bool r;
 
 	if (!handle) {
 		// FIXME: how to handle this case:
@@ -338,7 +344,7 @@ size_t cs_disasm_ex(csh ud, const uint8_t *buffer, size_t size, uint64_t offset,
 		MCInst_Init(&mci);
 		mci.csh = handle;
 
-		bool r = handle->disasm(ud, buffer, size, &mci, &insn_size, offset, handle->getinsn_info);
+		r = handle->disasm(ud, buffer, size, &mci, &insn_size, offset, handle->getinsn_info);
 		if (r) {
 			SStream ss;
 			SStream_Init(&ss);
@@ -364,8 +370,10 @@ size_t cs_disasm_ex(csh ud, const uint8_t *buffer, size_t size, uint64_t offset,
 
 				if (f == ARR_SIZE(insn_cache)) {
 					// resize total to contain newly disasm insns
+					void *tmp;
+
 					total_size += (sizeof(cs_insn) * INSN_CACHE_SIZE);
-					void *tmp = cs_mem_realloc(total, total_size);
+					tmp = cs_mem_realloc(total, total_size);
 					if (tmp == NULL) {	// insufficient memory
 						cs_mem_free(total);
 						handle->errnum = CS_ERR_MEM;
