@@ -1,0 +1,14 @@
+Description: CPPFLAGS is not being used.
+ Without CPPFLAGS we cannot have fortified builds.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: no
+Last-Update: 2014-05-05
+
+--- capstone-2.1.2.orig/Makefile
++++ capstone-2.1.2/Makefile
+@@ -286,4 +286,4 @@ dist:
+ 	git archive --format=zip --prefix=capstone-$(DIST_VERSION)/ $(TAG) > capstone-$(DIST_VERSION).zip
+ 
+ .c.o:
+-	$(CC) $(CFLAGS) -c $< -o $@
++	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@

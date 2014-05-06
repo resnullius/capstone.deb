@@ -5,5 +5,7 @@ capstone (2.1.2-1) UNRELEASED; urgency=low
     - typos: Added to fix some stuff I spotted.
     - no_usr_lib64: Remove the distinction that makes x86_64 install the
       library in /usr/lib64.
+    - use_cppflags: Add the usage of CPPFLAGS to the build in order to have
+      proper hardening.
 
  -- David Martínez Moreno <ender@debian.org>  Mon, 05 May 2014 10:36:21 -0700

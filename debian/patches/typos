@@ -4,9 +4,9 @@ Author: David Martínez Moreno <ender@debian.org>
 Forwarded: no
 Last-Update: 2014-05-05
 
---- capstone-2.1.orig/README
-+++ capstone-2.1/README
-@@ -31,7 +31,7 @@ Further information is available at http
+--- a/README
++++ b/README
+@@ -31,7 +31,7 @@
  
  [Compile]
  
@@ -15,7 +15,7 @@ Last-Update: 2014-05-05
  
  
  [Status]
-@@ -41,7 +41,7 @@ MingW. Visual Studio support will be don
+@@ -41,7 +41,7 @@
  
  - X86 engine cannot handle many malware tricks yet. Please report all the raw
  binary code that Capstone cannot disassemble, or does that wrongly, so we can
@@ -24,7 +24,7 @@ Last-Update: 2014-05-05
  
  - This package only contains Java & Python bindings. For C#, Go, Ocaml & Ruby,
  refer to the corresponding git repositories.
-@@ -49,7 +49,7 @@ refer to the corresponding git repositor
+@@ -49,7 +49,7 @@
  
  [Hack]
  
@@ -33,9 +33,9 @@ Last-Update: 2014-05-05
  
  
  [License]
---- capstone-2.1.orig/config.mk
-+++ capstone-2.1/config.mk
-@@ -40,7 +40,7 @@ USE_SYS_DYN_MEM = yes
+--- a/config.mk
++++ b/config.mk
+@@ -40,7 +40,7 @@
  # such as @regs_read/write & @group. The amount of binary size reduced is
  # up to 50% in some individual archs.
  #
@@ -44,3 +44,73 @@ Last-Update: 2014-05-05
  # @regs_write, @groups, etc in fields in cs_insn structure regardless, but they
  # will not be updated (i.e empty), thus become irrelevant.
  
+--- a/COMPILE.TXT
++++ b/COMPILE.TXT
+@@ -1,4 +1,4 @@
+-How To Compile, install & run Capstone for Linux, Mac OSX, *BSD and Windows
++How to compile, install & run Capstone for Linux, Mac OSX, *BSD and Windows
+                         *-*-*-*-*-*
+ 
+ Capstone requires no prerequisite packages, so it is easy to compile & install.
+@@ -7,7 +7,7 @@
+ 
+ (0) Tailor Capstone to your need.
+ 
+-  Out of 5 archtitectures supported by Capstone (Arm, Arm64, Mips, PPC & X86),
++  Out of 5 architectures supported by Capstone (ARM, ARM64, MIPS, PPC & x86),
+   if you just need several selected archs, you can choose which ones you want
+   to compile in by modifying config.mk before going to next steps.
+ 
+@@ -17,13 +17,13 @@
+ 
+ (1) Compile from source
+ 
+-  On *nix (such as MacOSX, Linux, *BSD, Solaris):
++  On *nix (such as OSX, Linux, *BSD, Solaris):
+ 
+   - To compile for current platform, run:
+ 
+ 		$ ./make.sh
+ 
+-  - On 64-bit OS, run command below to cross-compile Capstone for 32-bit binary:
++  - On a 64-bit OS, run command below to cross-compile Capstone for 32-bit binary:
+ 
+ 	$ ./make.sh nix32
+ 
+@@ -34,7 +34,7 @@
+   To install Capstone, run:
+ 
+ 	$ sudo ./make.sh install
+-	
++
+ 	For FreeBSD/OpenBSD, where sudo is unavailable, run:
+ 
+ 	$ su; ./make.sh install
+@@ -70,14 +70,14 @@
+ 	- To cross-compile Windows 64-bit binary, run:
+ 		$ ./make.sh cross-win64
+ 
+-  Resulted files libcapstone.dll, libcapstone.dll.a & tests/test*.exe can then
+-  be used on Windows machine.
++  Resulting files libcapstone.dll, libcapstone.dll.a & tests/test*.exe can then
++  be used on a Windows machine.
+ 
+ 
+ 
+ (4) Cross-compile iOS from Mac OSX.
+ 
+-  To cross-compile for iOS (iPhone/iPad/iPod), Mac OSX with XCode installed is required. 
++  To cross-compile for iOS (iPhone/iPad/iPod), Mac OSX with XCode installed is required.
+ 
+ 	- To cross-compile for ArmV7 (iPod 4, iPad 1/2/3, iPhone4, iPhone4S), run:
+ 		$ ./make.sh ios_armv7
+@@ -126,7 +126,7 @@
+ 
+   So far, Python, Ocaml & Java are supported by bindings in the main code.
+   Look for the bindings under directory bindings/, and refer to README file
+-  of corresponding languages.
++  of the corresponding language.
+ 
+   Community also provide bindings for C#, Go, Ruby & Vala. Links to these can
+-  be found at address http://capstone-engine.org/download.html
++  be found at the address http://capstone-engine.org/download.html.
