@@ -1,7 +1,9 @@
-capstone (2.1-1) UNRELEASED; urgency=low
+capstone (2.1.2-1) UNRELEASED; urgency=low
 
   * Initial release (closes: #741028).
   * debian/patches:
     - typos: Added to fix some stuff I spotted.
+    - no_usr_lib64: Remove the distinction that makes x86_64 install the
+      library in /usr/lib64.
 
- -- David Martínez Moreno <ender@debian.org>  Fri, 07 Mar 2014 08:34:59 -0800
+ -- David Martínez Moreno <ender@debian.org>  Mon, 05 May 2014 10:36:21 -0700
