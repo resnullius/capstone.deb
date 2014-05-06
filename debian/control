@@ -5,33 +5,39 @@ Build-Depends: debhelper (>= 9.0.0)
 Standards-Version: 3.9.5
 Section: devel
 Homepage: http://www.capstone-engine.org/
-Vcs-Git: git://git.debian.org/collab-maint/capstone.git
-Vcs-Browser: http://git.debian.org/?p=collab-maint/capstone.git;a=summary
+Vcs-Git: git://anonscm.debian.org/collab-maint/capstone.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/capstone.git;a=summary
 
-Package: capstone-dev
+Package: libcapstone-dev
 Section: libdevel
 Architecture: any
 Depends: libcapstone1 (= ${binary:Version})
 Description: lightweight multi-architecture disassembly framework - devel files
- <insert long description, indented with spaces>
+ Capstone is a lightweight multi-platform, multi-architecture disassembly
+ framework.
+ .
+ These are the development headers and libraries.
 
-Package: libcapstone1
+Package: libcapstone2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: lightweight multi-architecture disassembly framework - library
- Capstone is a lightweight multi-platform, multi-architecture disassembly framework.
+ Capstone is a lightweight multi-platform, multi-architecture disassembly
+ framework.
  .
  Features:
- - Support hardware architectures: ARM, ARM64 (aka ARMv8), Mips, PowerPC & Intel.
+ - Support hardware architectures: ARM, ARM64 (aka ARMv8), Mips, PowerPC &
+ Intel.
  - Clean/simple/lightweight/intuitive architecture-neutral API.
  - Provide details on disassembled instructions (called "decomposer" by some
  others).
  - Provide some semantics of the disassembled instruction, such as list of
  implicit registers read & written.
- - Implemented in pure C language, with bindings for Java, OCaml and Python ready to
- use and Ruby, C#, GO & Vala available on git repos.
- - Native support for Windows & *nix (with OS X, Linux, *BSD & Solaris confirmed).
+ - Implemented in pure C language, with bindings for Java, OCaml and Python
+ ready to use and Ruby, C#, GO & Vala available on git repos.
+ - Native support for Windows & *nix (with OS X, Linux, *BSD & Solaris
+ confirmed).
  - Thread-safe by design.
  - Special support for embedding into firmware or OS kernel.
  - Distributed under the open source BSD license.
