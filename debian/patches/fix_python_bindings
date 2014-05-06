@@ -1,0 +1,66 @@
+Description: Allow to build Python bindings with internal headers.
+ The build system in capstone for the Python bindings works by installing
+ the library with the headers, and then building the bindings.  Change that
+ to allow building them in the same run we create the library.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: no
+Last-Update: 2014-05-05
+
+--- a/bindings/python/setup_cython.py
++++ b/bindings/python/setup_cython.py
+@@ -6,19 +6,21 @@
+ VERSION = '2.1'
+ 
+ compile_args = ['-O3', '-fomit-frame-pointer']
++include_dirs = ['../../include']
++library_dirs = ['../../']
+ 
+-ext_modules = [ Extension("capstone.capstone", ["pyx/capstone.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.ccapstone", ["pyx/ccapstone.pyx"], libraries=["capstone"], extra_compile_args=compile_args),
+-    Extension("capstone.arm", ["pyx/arm.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.arm_const", ["pyx/arm_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.arm64", ["pyx/arm64.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.arm64_const", ["pyx/arm64_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.mips", ["pyx/mips.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.mips_const", ["pyx/mips_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.ppc", ["pyx/ppc.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.ppc_const", ["pyx/ppc_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.x86", ["pyx/x86.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.x86_const", ["pyx/x86_const.pyx"], extra_compile_args=compile_args)
++ext_modules = [ Extension("capstone.capstone", ["pyx/capstone.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.ccapstone", ["pyx/ccapstone.pyx"], libraries=["capstone"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.arm", ["pyx/arm.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.arm_const", ["pyx/arm_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.arm64", ["pyx/arm64.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.arm64_const", ["pyx/arm64_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.mips", ["pyx/mips.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.mips_const", ["pyx/mips_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.ppc", ["pyx/ppc.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.ppc_const", ["pyx/ppc_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.x86", ["pyx/x86.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.x86_const", ["pyx/x86_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs)
+ ]
+ 
+ # clean package directory first
+--- a/bindings/python/pyx/ccapstone.pxd
++++ b/bindings/python/pyx/ccapstone.pxd
+@@ -3,7 +3,7 @@
+ from libcpp cimport bool
+ from libc.stdint cimport uint8_t, uint64_t, uint16_t
+ 
+-cdef extern from "<capstone/capstone.h>":
++cdef extern from "<capstone.h>":
+ 
+     ctypedef size_t csh
+ 
+--- a/bindings/python/Makefile
++++ b/bindings/python/Makefile
+@@ -27,7 +27,7 @@
+ 	# clean up first
+ 	rm -rf build
+ 	# then install
+-	python setup_cython.py install
++	python setup_cython.py install $(OPTS)
+ 
+ clean:
+ 	rm -rf capstone/*.pyc

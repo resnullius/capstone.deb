@@ -1,7 +1,14 @@
 Source: capstone
 Priority: optional
 Maintainer: David Martínez Moreno <ender@debian.org>
-Build-Depends: debhelper (>= 9.0.0)
+X-Python-Version: >= 2.7
+Build-Depends: debhelper (>= 9),
+               quilt,
+               dh-python,
+               python,
+               python2.7,
+               python2.7-dev,
+               cython (>= 0.19)
 Standards-Version: 3.9.5
 Section: devel
 Homepage: http://www.capstone-engine.org/
@@ -41,3 +48,14 @@ Description: lightweight multi-architecture disassembly framework - library
   - Thread-safe by design.
   - Special support for embedding into firmware or OS kernel.
   - Distributed under the open source BSD license.
+
+Package: python-capstone
+Section: python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+XB-Python-Version: ${python:Versions}
+Description: lightweight multi-architecture disassembly framework - Python bindings
+ Capstone is a lightweight multi-platform, multi-architecture disassembly
+ framework.
+ .
+ These are the Python 2 bindings.

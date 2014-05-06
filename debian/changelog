@@ -1,11 +1,15 @@
-capstone (2.1.2-1) UNRELEASED; urgency=low
+capstone (2.1.2-1) unstable; urgency=low
 
   * Initial release (closes: #741028).
+    - Build only the Python bindings for now.
   * debian/patches:
     - typos: Added to fix some stuff I spotted.
     - no_usr_lib64: Remove the distinction that makes x86_64 install the
       library in /usr/lib64.
     - use_cppflags: Add the usage of CPPFLAGS to the build in order to have
-      proper hardening.
+      proper hardened build.
+    - fix_python_bindings: Add necessary includes and library directories to
+      build the bindings in the same run as the library itself, together with
+      a way to pass arbitrary arguments to setup.py.
 
- -- David Martínez Moreno <ender@debian.org>  Mon, 05 May 2014 10:36:21 -0700
+ -- David Martínez Moreno <ender@debian.org>  Tue, 06 May 2014 14:44:25 -0700
