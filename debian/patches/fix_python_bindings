@@ -1,7 +1,9 @@
-Description: Allow to build Python bindings with internal headers.
+Description: Fix build system for Python bindings.
  The build system in capstone for the Python bindings works by installing
  the library with the headers, and then building the bindings.  Change that
- to allow building them in the same run we create the library.
+ to allow building them in the same run we create the library, and search
+ for the versioned library instead of the .so one, removing the dependency
+ on libcapstone-dev.
 Author: David Martínez Moreno <ender@debian.org>
 Forwarded: no
 Last-Update: 2014-05-05
@@ -64,3 +66,14 @@ Last-Update: 2014-05-05
  
  clean:
  	rm -rf capstone/*.pyc
+--- a/bindings/python/capstone/capstone.py
++++ b/bindings/python/capstone/capstone.py
+@@ -124,7 +124,7 @@
+     __file__ = inspect.getfile(inspect.currentframe())
+ 
+ _lib_path = split(__file__)[0]
+-_all_libs = ['libcapstone.dll', 'libcapstone.so', 'libcapstone.dylib']
++_all_libs = ['libcapstone.dll', 'libcapstone.so.2', 'libcapstone.dylib']
+ _found = False
+ 
+ for _lib in _all_libs:
