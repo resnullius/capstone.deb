@@ -1,3 +1,14 @@
+capstone (2.1.2-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Rename union member "mips" to "mips-arch" to fix FTBFS on mips/mipsel.
+    Drop mips_macro_conflict.patch.
+    Add capstone-mips.patch.
+    Patch by Dejan Latinovic <Dejan.Latinovic@imgtec.com>.
+    Closes: #755193.
+
+ -- Anibal Monsalve Salazar <anibal@debian.org>  Mon, 06 Oct 2014 09:51:47 +0100
+
 capstone (2.1.2-2) unstable; urgency=medium
 
   * debian/patches/mips_macro_conflict.patch: Remove a compiler macro

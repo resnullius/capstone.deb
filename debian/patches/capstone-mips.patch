@@ -1,0 +1,185 @@
+From: Dejan Latinovic <Dejan.Latinovic@imgtec.com>
+To: "755193@bugs.debian.org" <755193@bugs.debian.org>
+Cc: Plamen Aleksandrov <plamen@aomeda.com>, David Martínez Moreno <ender@debian.org>
+Subject: Bug#755193: capstone: FTBFS on mips
+Date: Thu, 24 Jul 2014 16:36:32 +0000
+
+package capstone FTBFS again on mips/mipsel.
+
+It seams that adding -Umpis as CFLAGS in Makefile does not fully solve the
+issue.
+
+If we add this flag directory in rules for mips, package builds successfully.
+
+Patch that contains needed changes is attached: fix-capstone-rules.patch
+
+But, in my opinion, the better (long term) solution would be to use a different
+name for union member, instead of "mips".
+
+Patch that changes name of the union member is attached.  capstone-mips.patch
+
+For both patches, mips_macro_conflict.patch could be removed.
+
+Both patches are tested on mips and mipsel.
+
+Index: capstone-2.1.2/MCInst.h
+===================================================================
+--- capstone-2.1.2.orig/MCInst.h
++++ capstone-2.1.2/MCInst.h
+@@ -126,7 +126,7 @@ typedef struct cs_insn_flat {
+ 		cs_x86 x86;	// X86 architecture, including 16-bit, 32-bit & 64-bit mode
+ 		cs_arm64 arm64;	// ARM64 architecture (aka AArch64)
+ 		cs_arm arm;		// ARM architecture (including Thumb/Thumb2)
+-		cs_mips mips;	// MIPS architecture
++		cs_mips mips_arch;	// MIPS architecture
+ 		cs_ppc ppc;	// PowerPC architecture
+ 	};
+ } cs_insn_flat;
+Index: capstone-2.1.2/arch/Mips/MipsInstPrinter.c
+===================================================================
+--- capstone-2.1.2.orig/arch/Mips/MipsInstPrinter.c
++++ capstone-2.1.2/arch/Mips/MipsInstPrinter.c
+@@ -91,12 +91,12 @@ static void set_mem_access(MCInst *MI, b
+ 		return;
+ 
+ 	if (status) {
+-		MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].type = MIPS_OP_MEM;
+-		MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].mem.base = MIPS_REG_INVALID;
+-		MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].mem.disp = 0;
++		MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].type = MIPS_OP_MEM;
++		MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].mem.base = MIPS_REG_INVALID;
++		MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].mem.disp = 0;
+ 	} else {
+ 		// done, create the next operand slot
+-		MI->flat_insn.mips.op_count++;
++		MI->flat_insn.mips_arch.op_count++;
+ 	}
+ }
+ 
+@@ -228,11 +228,11 @@ static void printOperand(MCInst *MI, uns
+ 		reg = Mips_map_register(reg);
+ 		if (MI->csh->detail) {
+ 			if (MI->csh->doing_mem) {
+-				MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].mem.base = reg;
++				MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].mem.base = reg;
+ 			} else {
+-				MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].type = MIPS_OP_REG;
+-				MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].reg = reg;
+-				MI->flat_insn.mips.op_count++;
++				MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].type = MIPS_OP_REG;
++				MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].reg = reg;
++				MI->flat_insn.mips_arch.op_count++;
+ 			}
+ 		}
+ 	}
+@@ -254,7 +254,7 @@ static void printOperand(MCInst *MI, uns
+ 				}
+ 			}
+ 			if (MI->csh->detail)
+-				MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].mem.disp = imm;
++				MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].mem.disp = imm;
+ 		} else {
+ 			if (imm >= 0) {
+ 				if (imm > HEX_THRESHOLD)
+@@ -269,9 +269,9 @@ static void printOperand(MCInst *MI, uns
+ 			}
+ 
+ 			if (MI->csh->detail) {
+-				MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].type = MIPS_OP_IMM;
+-				MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].imm = imm;
+-				MI->flat_insn.mips.op_count++;
++				MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].type = MIPS_OP_IMM;
++				MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].imm = imm;
++				MI->flat_insn.mips_arch.op_count++;
+ 			}
+ 		}
+ 	}
+@@ -294,9 +294,9 @@ static void printUnsignedImm(MCInst *MI,
+ 				SStream_concat(O, "-%u", (short int)-imm);
+ 		}
+ 		if (MI->csh->detail) {
+-			MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].type = MIPS_OP_IMM;
+-			MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].imm = (unsigned short int)imm;
+-			MI->flat_insn.mips.op_count++;
++			MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].type = MIPS_OP_IMM;
++			MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].imm = (unsigned short int)imm;
++			MI->flat_insn.mips_arch.op_count++;
+ 		}
+ 	} else
+ 		printOperand(MI, opNum, O);
+@@ -312,9 +312,9 @@ static void printUnsignedImm8(MCInst *MI
+ 		else
+ 			SStream_concat(O, "%u", imm);
+ 		if (MI->csh->detail) {
+-			MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].type = MIPS_OP_IMM;
+-			MI->flat_insn.mips.operands[MI->flat_insn.mips.op_count].imm = imm;
+-			MI->flat_insn.mips.op_count++;
++			MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].type = MIPS_OP_IMM;
++			MI->flat_insn.mips_arch.operands[MI->flat_insn.mips_arch.op_count].imm = imm;
++			MI->flat_insn.mips_arch.op_count++;
+ 		}
+ 	} else
+ 		printOperand(MI, opNum, O);
+Index: capstone-2.1.2/cs.c
+===================================================================
+--- capstone-2.1.2.orig/cs.c
++++ capstone-2.1.2/cs.c
+@@ -567,8 +567,8 @@ int cs_op_count(csh ud, cs_insn *insn, u
+ 					count++;
+ 			break;
+ 		case CS_ARCH_MIPS:
+-			for (i = 0; i < insn->detail->mips.op_count; i++)
+-				if (insn->detail->mips.operands[i].type == (mips_op_type)op_type)
++			for (i = 0; i < insn->detail->mips_arch.op_count; i++)
++				if (insn->detail->mips_arch.operands[i].type == (mips_op_type)op_type)
+ 					count++;
+ 			break;
+ 		case CS_ARCH_PPC:
+@@ -626,8 +626,8 @@ int cs_op_index(csh ud, cs_insn *insn, u
+ 			}
+ 			break;
+ 		case CS_ARCH_MIPS:
+-			for (i = 0; i < insn->detail->mips.op_count; i++) {
+-				if (insn->detail->mips.operands[i].type == (mips_op_type)op_type)
++			for (i = 0; i < insn->detail->mips_arch.op_count; i++) {
++				if (insn->detail->mips_arch.operands[i].type == (mips_op_type)op_type)
+ 					count++;
+ 				if (count == post)
+ 					return i;
+Index: capstone-2.1.2/include/capstone.h
+===================================================================
+--- capstone-2.1.2.orig/include/capstone.h
++++ capstone-2.1.2/include/capstone.h
+@@ -115,7 +115,7 @@ typedef struct cs_detail {
+ 		cs_x86 x86;	// X86 architecture, including 16-bit, 32-bit & 64-bit mode
+ 		cs_arm64 arm64;	// ARM64 architecture (aka AArch64)
+ 		cs_arm arm;		// ARM architecture (including Thumb/Thumb2)
+-		cs_mips mips;	// MIPS architecture
++		cs_mips mips_arch;	// MIPS architecture
+ 		cs_ppc ppc;	// PowerPC architecture
+ 	};
+ } cs_detail;
+Index: capstone-2.1.2/tests/test_mips.c
+===================================================================
+--- capstone-2.1.2.orig/tests/test_mips.c
++++ capstone-2.1.2/tests/test_mips.c
+@@ -31,14 +31,14 @@ static void print_string_hex(char *comme
+ 
+ static void print_insn_detail(cs_insn *ins)
+ {
+-	cs_mips *mips = &(ins->detail->mips);
++	cs_mips *mips_arch = &(ins->detail->mips_arch);
+ 
+-	if (mips->op_count)
+-		printf("\top_count: %u\n", mips->op_count);
++	if (mips_arch->op_count)
++		printf("\top_count: %u\n", mips_arch->op_count);
+ 
+ 	int i;
+-	for (i = 0; i < mips->op_count; i++) {
+-		cs_mips_op *op = &(mips->operands[i]);
++	for (i = 0; i < mips_arch->op_count; i++) {
++		cs_mips_op *op = &(mips_arch->operands[i]);
+ 		switch((int)op->type) {
+ 			default:
+ 				break;
