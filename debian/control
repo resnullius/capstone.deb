@@ -18,14 +18,14 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/capstone.git;a=sum
 Package: libcapstone-dev
 Section: libdevel
 Architecture: any
-Depends: libcapstone2 (= ${binary:Version}), ${misc:Depends}
+Depends: libcapstone3 (= ${binary:Version}), ${misc:Depends}
 Description: lightweight multi-architecture disassembly framework - devel files
  Capstone is a lightweight multi-platform, multi-architecture disassembly
  framework.
  .
  These are the development headers and libraries.
 
-Package: libcapstone2
+Package: libcapstone3
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
