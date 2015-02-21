@@ -5,8 +5,11 @@
 #export DH_VERBOSE=1
 
 %:
-	dh $@  --with python2
+	dh $@  --with python2 --parallel
 
 override_dh_auto_install:
 	dh_auto_install
 	cd bindings/python && OPTS="--root=$(CURDIR)/debian/tmp/ --install-layout=deb" make install_cython
+
+override_dh_install:
+	dh_install --fail-missing
