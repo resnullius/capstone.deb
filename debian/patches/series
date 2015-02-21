@@ -1,5 +1,3 @@
-typos
-no_usr_lib64
 use_cppflags
 fix_python_bindings
-capstone-mips.patch
+limit_exported_symbols

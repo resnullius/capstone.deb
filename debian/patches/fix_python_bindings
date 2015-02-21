@@ -6,18 +6,18 @@ Description: Fix build system for Python bindings.
  on libcapstone-dev.
 Author: David Martínez Moreno <ender@debian.org>
 Forwarded: no
-Last-Update: 2014-05-05
+Last-Update: 2015-02-25
 
 --- a/bindings/python/setup_cython.py
 +++ b/bindings/python/setup_cython.py
-@@ -6,19 +6,21 @@
- VERSION = '2.1'
+@@ -6,25 +6,27 @@ from Cython.Distutils import build_ext
+ VERSION = '3.0'
  
  compile_args = ['-O3', '-fomit-frame-pointer']
-+include_dirs = ['../../include']
-+library_dirs = ['../../']
++include_dirs = ['../../../include']
++library_dirs = ['../../../']
  
--ext_modules = [ Extension("capstone.capstone", ["pyx/capstone.pyx"], extra_compile_args=compile_args),
+ ext_modules = [
 -    Extension("capstone.ccapstone", ["pyx/ccapstone.pyx"], libraries=["capstone"], extra_compile_args=compile_args),
 -    Extension("capstone.arm", ["pyx/arm.pyx"], extra_compile_args=compile_args),
 -    Extension("capstone.arm_const", ["pyx/arm_const.pyx"], extra_compile_args=compile_args),
@@ -28,8 +28,13 @@ Last-Update: 2014-05-05
 -    Extension("capstone.ppc", ["pyx/ppc.pyx"], extra_compile_args=compile_args),
 -    Extension("capstone.ppc_const", ["pyx/ppc_const.pyx"], extra_compile_args=compile_args),
 -    Extension("capstone.x86", ["pyx/x86.pyx"], extra_compile_args=compile_args),
--    Extension("capstone.x86_const", ["pyx/x86_const.pyx"], extra_compile_args=compile_args)
-+ext_modules = [ Extension("capstone.capstone", ["pyx/capstone.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
+-    Extension("capstone.x86_const", ["pyx/x86_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.sparc", ["pyx/sparc.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.sparc_const", ["pyx/sparc_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.systemz", ["pyx/systemz.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.sysz_const", ["pyx/sysz_const.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.xcore", ["pyx/xcore.pyx"], extra_compile_args=compile_args),
+-    Extension("capstone.xcore_const", ["pyx/xcore_const.pyx"], extra_compile_args=compile_args)
 +    Extension("capstone.ccapstone", ["pyx/ccapstone.pyx"], libraries=["capstone"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
 +    Extension("capstone.arm", ["pyx/arm.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
 +    Extension("capstone.arm_const", ["pyx/arm_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
@@ -40,7 +45,13 @@ Last-Update: 2014-05-05
 +    Extension("capstone.ppc", ["pyx/ppc.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
 +    Extension("capstone.ppc_const", ["pyx/ppc_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
 +    Extension("capstone.x86", ["pyx/x86.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
-+    Extension("capstone.x86_const", ["pyx/x86_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs)
++    Extension("capstone.x86_const", ["pyx/x86_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.sparc", ["pyx/sparc.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.sparc_const", ["pyx/sparc_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.systemz", ["pyx/systemz.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.sysz_const", ["pyx/sysz_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.xcore", ["pyx/xcore.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs),
++    Extension("capstone.xcore_const", ["pyx/xcore_const.pyx"], extra_compile_args=compile_args, include_dirs=include_dirs, library_dirs=library_dirs)
  ]
  
  # clean package directory first
@@ -57,23 +68,28 @@ Last-Update: 2014-05-05
  
 --- a/bindings/python/Makefile
 +++ b/bindings/python/Makefile
-@@ -27,7 +27,7 @@
- 	# clean up first
- 	rm -rf build
- 	# then install
--	python setup_cython.py install
-+	python setup_cython.py install $(OPTS)
+@@ -13,13 +13,13 @@ install:
+ 	rm -rf $(OBJDIR) src/
+ 	rm -rf prebuilt/win64/capstone.dll
+ 	rm -rf prebuilt/win32/capstone.dll
+-	python setup.py build -b $(OBJDIR) install
++	python setup.py build -b $(OBJDIR) install $(OPTS)
  
- clean:
- 	rm -rf capstone/*.pyc
---- a/bindings/python/capstone/capstone.py
-+++ b/bindings/python/capstone/capstone.py
-@@ -124,7 +124,7 @@
-     __file__ = inspect.getfile(inspect.currentframe())
+ install3:
+ 	rm -rf $(OBJDIR) src/
+ 	rm -rf prebuilt/win64/capstone.dll
+ 	rm -rf prebuilt/win32/capstone.dll
+-	python3 setup.py build -b $(OBJDIR) install
++	python3 setup.py build -b $(OBJDIR) install $(OPTS)
  
- _lib_path = split(__file__)[0]
--_all_libs = ['libcapstone.dll', 'libcapstone.so', 'libcapstone.dylib']
-+_all_libs = ['libcapstone.dll', 'libcapstone.so.2', 'libcapstone.dylib']
- _found = False
+ # NOTE: Newer cython can be installed by: sudo pip install --upgrade cython
+ install_cython:
+@@ -48,7 +48,7 @@ install_cython:
+ 	cp capstone/xcore_const.py $(OBJDIR)/pyx/xcore_const.pyx
+ 	cd $(OBJDIR) && python setup_cython.py build -b ./tmp install --home=$(OBJDIR)
+ 	mv $(OBJDIR)/build/lib/python/capstone/* capstone
+-	cd $(OBJDIR) && python setup_cython.py build -b ./tmp install
++	cd $(OBJDIR) && python setup_cython.py build -b ./tmp install $(OPTS)
  
- for _lib in _all_libs:
+ # build & upload PyPi package with source code of the core
+ sdist:

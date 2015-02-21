@@ -2,13 +2,16 @@ Description: CPPFLAGS is not being used.
  Without CPPFLAGS we cannot have fortified builds.
 Author: David Martínez Moreno <ender@debian.org>
 Forwarded: no
-Last-Update: 2014-05-05
+Last-Update: 2015-02-25
 
---- a/Makefile
-+++ b/Makefile
-@@ -286,4 +286,4 @@
- 	git archive --format=zip --prefix=capstone-$(DIST_VERSION)/ $(TAG) > capstone-$(DIST_VERSION).zip
+--- a/functions.mk
++++ b/functions.mk
+@@ -2,7 +2,7 @@
+ # Common functions used by Makefile & tests/Makefile
  
- .c.o:
--	$(CC) $(CFLAGS) -c $< -o $@
-+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+ define compile
+-	${CC} ${CFLAGS} -c $< -o $@
++	${CC} ${CFLAGS} ${CPPFLAGS} -c $< -o $@
+ endef
+
+
