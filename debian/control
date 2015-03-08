@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 9),
                python2.7,
                python2.7-dev,
                cython (>= 0.19)
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Section: devel
 Homepage: http://www.capstone-engine.org/
 Vcs-Git: git://anonscm.debian.org/collab-maint/capstone.git
