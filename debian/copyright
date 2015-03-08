@@ -6,7 +6,7 @@ Source: http://www.capstone-project.org
 Files: *
 Copyright: 2013, COSEINC
            2013, Nguyen Anh Quynh <aquynh@gmail.com>
-License: BSD
+License: BSD-3-clause
 
 Files: arch/AArch64/AArch64BaseInfo.c
  arch/AArch64/AArch64BaseInfo.h
@@ -64,10 +64,7 @@ License: GPL-2+
  On Debian systems, the complete text of the GNU General
  Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
 
-License: BSD
- Copyright (c) 2013, COSEINC.
- All rights reserved.
- .
+License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  .
