@@ -1,4 +1,4 @@
 # Compulsory line, this is a version 3 file
 version=3
 
-http://www.capstone-engine.org/download.html /download/(.*)/capstone-(.*).tgz
+http://www.capstone-engine.org/download.html /download/.*/capstone-(.*).tgz
