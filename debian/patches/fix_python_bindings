@@ -11,7 +11,7 @@ Last-Update: 2015-02-25
 --- a/bindings/python/setup_cython.py
 +++ b/bindings/python/setup_cython.py
 @@ -6,25 +6,27 @@ from Cython.Distutils import build_ext
- VERSION = '3.0'
+ VERSION = '3.0.2'
  
  compile_args = ['-O3', '-fomit-frame-pointer']
 +include_dirs = ['../../../include']
