@@ -3,7 +3,7 @@ project(capstone)
 
 set(VERSION_MAJOR 3)
 set(VERSION_MINOR 0)
-set(VERSION_PATCH 2)
+set(VERSION_PATCH 3)
 
 # to configure the options specify them in in the command line or change them in the cmake UI.
 # Don't edit the makefile!
@@ -24,6 +24,7 @@ option(CAPSTONE_XCORE_SUPPORT "XCore support" ON)
 option(CAPSTONE_X86_SUPPORT "x86 support" ON)
 option(CAPSTONE_X86_REDUCE "x86 with reduce instruction sets to minimize library" OFF)
 option(CAPSTONE_X86_ATT_DISABLE "Disable x86 AT&T syntax" OFF)
+option(CAPSTONE_OSXKERNEL_SUPPORT "Support to embed Capstone into OS X Kernel extensions" OFF)
 
 if (CAPSTONE_BUILD_DIET)
     add_definitions(-DCAPSTONE_DIET)
@@ -156,6 +157,10 @@ if (CAPSTONE_XCORE_SUPPORT)
     set(TEST_SOURCES ${TEST_SOURCES} test_xcore.c)
 endif ()
 
+if (CAPSTONE_OSXKERNEL_SUPPORT)
+    add_definitions(-DCAPSTONE_HAS_OSXKERNEL)
+endif ()
+
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 ## properties
@@ -186,6 +191,10 @@ if (CAPSTONE_BUILD_SHARED)
     add_library(capstone-shared SHARED ${SOURCES})
     set_property(TARGET capstone-shared PROPERTY OUTPUT_NAME capstone)
     set_property(TARGET capstone-shared PROPERTY COMPILE_FLAGS -DCAPSTONE_SHARED)
+
+    if (MSVC)
+        set_target_properties(capstone-shared PROPERTIES IMPORT_SUFFIX _dll.lib)
+    endif ()
 
     if(NOT DEFINED default-target)      # honor `capstone-static` for tests first.
 	set(default-target capstone-shared)
