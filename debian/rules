@@ -7,9 +7,17 @@
 %:
 	dh $@  --with python2 --parallel
 
+override_dh_auto_configure:
+	dh_auto_configure
+	dh_auto_configure --sourcedirectory=bindings/python --buildsystem=python_distutils
+
+override_dh_auto_build:
+	dh_auto_build
+	dh_auto_build --sourcedirectory=bindings/python --buildsystem=python_distutils
+
 override_dh_auto_install:
 	dh_auto_install
-	cd bindings/python && OPTS="--root=$(CURDIR)/debian/tmp/ --install-layout=deb" make install_cython
+	dh_auto_install --sourcedirectory=bindings/python --buildsystem=python_distutils
 
 override_dh_install:
 	dh_install --fail-missing
