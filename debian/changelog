@@ -1,3 +1,12 @@
+capstone (3.0.3-0.1) unstable; urgency=medium
+
+  * Non-maintainer upload
+  * New upstream version
+  * Use distutils-based build script for Python bindings so we don't have
+    to deal with patching include paths and such.
+
+ -- Hilko Bengen <bengen@debian.org>  Sat, 09 May 2015 14:35:24 +0200
+
 capstone (3.0.2-0.1) unstable; urgency=medium
 
   * Non-maintainer upload
