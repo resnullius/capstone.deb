@@ -1,4 +1,6 @@
 # Compulsory line, this is a version 3 file
 version=3
 
-http://www.capstone-engine.org/download.html /download/.*/capstone-(.*).tgz
+opts="dversionmangle=s/\+dfsg//" \
+    http://www.capstone-engine.org/download.html /download/.*/capstone-(.*).tgz \
+    debian debian/orig-tar.sh
