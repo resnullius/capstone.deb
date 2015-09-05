@@ -52,7 +52,7 @@ Description: lightweight multi-architecture disassembly framework - library
 Package: python-capstone
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, libcapstone3
 XB-Python-Version: ${python:Versions}
 Description: lightweight multi-architecture disassembly framework - Python bindings
  Capstone is a lightweight multi-platform, multi-architecture disassembly
